@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Output Detective | Statistical Output Interpretation Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero" aria-labelledby="app-title">
+      <div class="hero__content">
+        <div class="eyebrow">Unit 8 Interactive Review</div>
+        <h1 id="app-title">Output Detective</h1>
+        <p class="hero__subtitle">Investigate statistical output, collect evidence, and choose the most responsible interpretation.</p>
+        <div class="hero__actions">
+          <button class="primary-btn" id="startGameBtn">Start Case File</button>
+          <button class="secondary-btn" id="howToBtn">How to Play</button>
+        </div>
+      </div>
+      <div class="hero__badge" aria-hidden="true">
+        <div class="magnifier">
+          <span></span>
+        </div>
+        <p>Evidence<br/>Board</p>
+      </div>
+    </section>
+
+    <section class="panel setup-panel" id="setupPanel">
+      <div class="panel__header">
+        <h2>Choose Your Investigation Mode</h2>
+        <p>Select a review focus. Each round includes immediate feedback and an end-of-round case summary.</p>
+      </div>
+      <div class="mode-grid" id="modeGrid">
+        <button class="mode-card is-selected" data-mode="mixed">
+          <span class="mode-card__label">Recommended</span>
+          <strong>Mixed Case File</strong>
+          <span>Practice all output interpretation skills in one round.</span>
+        </button>
+        <button class="mode-card" data-mode="key-values">
+          <span class="mode-card__label">Mode 1</span>
+          <strong>Find the Evidence</strong>
+          <span>Identify the key value in the output.</span>
+        </button>
+        <button class="mode-card" data-mode="interpret">
+          <span class="mode-card__label">Mode 2</span>
+          <strong>Interpret the Output</strong>
+          <span>Choose the best plain-language interpretation.</span>
+        </button>
+        <button class="mode-card" data-mode="spot-problem">
+          <span class="mode-card__label">Mode 3</span>
+          <strong>Spot the Problem</strong>
+          <span>Detect overclaims, missing context, and weak writing.</span>
+        </button>
+      </div>
+      <div class="round-controls">
+        <label for="roundLength">Questions per round</label>
+        <select id="roundLength">
+          <option value="8">8 questions</option>
+          <option value="10" selected>10 questions</option>
+          <option value="12">12 questions</option>
+          <option value="16">16 questions</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="game-grid" id="gameArea" hidden>
+      <aside class="case-sidebar panel" aria-label="Case progress">
+        <h2>Case Status</h2>
+        <div class="stat-card">
+          <span>Score</span>
+          <strong id="scoreText">0 / 0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Streak</span>
+          <strong id="streakText">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Evidence Accuracy</span>
+          <strong id="accuracyText">0%</strong>
+        </div>
+        <div class="progress-wrap" aria-label="Round progress">
+          <div class="progress-bar"><span id="progressFill"></span></div>
+          <p id="progressText">Question 1 of 10</p>
+        </div>
+        <button class="ghost-btn" id="restartBtn">Restart Round</button>
+      </aside>
+
+      <section class="question-panel panel" aria-live="polite">
+        <div class="question-meta">
+          <span id="categoryTag">Category</span>
+          <span id="difficultyTag">Difficulty</span>
+        </div>
+        <h2 id="questionTitle">Question title</h2>
+        <p id="questionPrompt">Question prompt</p>
+        <div class="output-card" id="outputCard"></div>
+        <div class="answer-grid" id="answerGrid"></div>
+        <div class="feedback" id="feedbackBox" hidden>
+          <h3 id="feedbackTitle">Feedback</h3>
+          <p id="feedbackText"></p>
+        </div>
+        <div class="question-actions">
+          <button class="secondary-btn" id="nextBtn" disabled>Next Question</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel results-panel" id="resultsPanel" hidden>
+      <div class="case-closed">
+        <span class="case-closed__stamp">Case Closed</span>
+        <h2 id="finalScoreTitle">Round Complete</h2>
+        <p id="finalScoreText"></p>
+      </div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="results-actions">
+        <button class="primary-btn" id="playAgainBtn">Play Again</button>
+        <button class="secondary-btn" id="reviewGuideBtn">Open Quick Guide</button>
+      </div>
+    </section>
+
+    <section class="panel guide-panel" id="guidePanel" hidden>
+      <div class="panel__header guide-heading">
+        <div>
+          <h2>Detective’s Quick Guide</h2>
+          <p>Use this guide when you are unsure what a value is telling you.</p>
+        </div>
+        <button class="ghost-btn" id="closeGuideBtn">Close Guide</button>
+      </div>
+      <div class="guide-grid">
+        <article>
+          <h3>Means &amp; SDs</h3>
+          <p>Means describe the center or average pattern. Standard deviations describe variability around the mean.</p>
+        </article>
+        <article>
+          <h3>p-values</h3>
+          <p>Compare p to alpha, usually .05. p &lt; .05 suggests statistical significance; p ≥ .05 does not.</p>
+        </article>
+        <article>
+          <h3>t and F values</h3>
+          <p>These are test statistics for group comparison models. Interpret them with their p-values and direction/pattern.</p>
+        </article>
+        <article>
+          <h3>R and R²</h3>
+          <p>R describes relationship strength. R² describes the proportion of variance explained by a regression model.</p>
+        </article>
+        <article>
+          <h3>Coefficients</h3>
+          <p>A coefficient describes the predicted change in the outcome for a one-unit increase in the predictor.</p>
+        </article>
+        <article>
+          <h3>Confidence Intervals</h3>
+          <p>CIs provide a range of plausible values for an estimate. For mean differences and slopes, intervals crossing zero require caution.</p>
+        </article>
+        <article>
+          <h3>ICC, SEM, MDC</h3>
+          <p>ICC describes reliability, SEM describes typical measurement error, and MDC describes the threshold for change beyond error.</p>
+        </article>
+        <article>
+          <h3>Professional Language</h3>
+          <p>Avoid “proved,” “guaranteed,” and causal claims unless the study design supports them.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="howToModal" hidden role="dialog" aria-modal="true" aria-labelledby="howToTitle">
+    <div class="modal__content">
+      <button class="modal__close" id="closeHowToBtn" aria-label="Close how to play">×</button>
+      <h2 id="howToTitle">How to Play</h2>
+      <p>You are the detective. Each card gives you statistical evidence: a small output table, result statement, or scenario. Choose the interpretation that best matches the evidence.</p>
+      <ul>
+        <li><strong>Find the Evidence:</strong> identify which statistic answers the question.</li>
+        <li><strong>Interpret the Output:</strong> translate output into responsible plain-language meaning.</li>
+        <li><strong>Spot the Problem:</strong> identify overclaims, missing context, or common interpretation mistakes.</li>
+      </ul>
+      <p>After each answer, read the feedback carefully. The goal is not speed; the goal is accurate statistical reasoning.</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
